@@ -8,15 +8,15 @@ Handling item clicks (if desired)
 
 package com.example.newspaper;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.view.View;
-import com.bumptech.glide.Glide;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
@@ -37,13 +37,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NewsArticle article = articles.get(position);
 
-        // Assuming you have an image loading library like Glide or Picasso
-        Glide.with(holder.itemView.getContext())
-                .load(article.getImageUrl())
-                .into(holder.articleImage);
-
+        // Bind the data to the UI components
         holder.articleTitle.setText(article.getTitle());
         holder.articleDescription.setText(article.getDescription());
+        Glide.with(holder.itemView.getContext()).load(article.getImageUrl()).into(holder.articleImage);
+
+        // Handle the click event
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ArticleDetailActivity.class);
+                intent.putExtra("article", article);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

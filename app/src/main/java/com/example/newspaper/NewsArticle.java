@@ -4,7 +4,9 @@ Class to represent each article
 
 package com.example.newspaper;
 
-public class NewsArticle {
+import java.io.Serializable;
+
+public class NewsArticle implements Serializable {
     private String title;
     private String description;
     private String imageUrl;

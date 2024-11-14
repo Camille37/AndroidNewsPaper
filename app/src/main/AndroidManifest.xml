@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NewsPaper"
         tools:targetApi="31">
+
+        <activity android:name=".ArticleDetailActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
