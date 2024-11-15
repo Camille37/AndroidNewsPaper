@@ -11,6 +11,8 @@ package com.example.newspaper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,12 +50,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             holder.articleDescription.setText(article.getAbstractText());
         }
 
-        //TODO
         // Convert image from string b64 to Bitmap
-        //if(article.getImage().getDescription()!=null) {
-        //    Bitmap image = Utils.base64StringToImg(article.getImage().getDescription());
-        //    holder.articleImage.setImageBitmap(image);
-        //}
+        if (article.getImage() !=null){
+            String image_thumbnail = article.getImage().getImage();
+            if(image_thumbnail!=null && !image_thumbnail.isEmpty()) {
+                Bitmap image = Utils.base64StringToImg(image_thumbnail);
+                if(image!=null) {
+                    holder.articleImage.setImageBitmap(image);
+                }
+            }
+        }
 
         // Handle the click event
         holder.itemView.setOnClickListener(new View.OnClickListener() {

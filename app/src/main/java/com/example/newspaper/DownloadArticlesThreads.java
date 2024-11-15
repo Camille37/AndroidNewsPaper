@@ -48,7 +48,7 @@ public class DownloadArticlesThreads implements Runnable{
             List<Article> article_list = mm.getArticles();
             for (Article article : article_list) {
                 System.out.println(article);
-                Log.i("authentification error", article.toString());
+                Log.i("articles", article.toString());
             }
             ma.runOnUiThread(new Runnable() {
                 @Override

@@ -72,6 +72,10 @@ public class Utils {
 
     public static String createScaledStrImage(String strSrc, int w, int h){
         Bitmap src = base64StringToImg(strSrc);
+        if(src==null){
+            Logger.log(-1,"Error in creating scaled image");
+            return(strSrc);
+        }
         int finalw = w;
         int finalh = h;
         double factor = 1.0d;

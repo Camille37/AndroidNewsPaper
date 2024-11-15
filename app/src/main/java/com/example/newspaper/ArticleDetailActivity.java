@@ -3,6 +3,7 @@ package com.example.newspaper;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,12 +31,17 @@ public class ArticleDetailActivity extends AppCompatActivity {
             if (article.getAbstractText()!=null) {
                 detailDescription.setText(article.getAbstractText());
             }
-            // TODO
+
             // Convert image from string b64 to Bitmap
-            //if (article.getImage().getDescription()!=null) {
-            //    Bitmap image = Utils.base64StringToImg(article.getImage().getDescription());
-            //    detailImage.setImageBitmap(image);
-            //}
+            if (article.getImage() !=null){
+                String image_thumbnail = article.getImage().getImage();
+                if(image_thumbnail!=null && !image_thumbnail.isEmpty()) {
+                    Bitmap image = Utils.base64StringToImg(image_thumbnail);
+                    if(image!=null) {
+                        detailImage.setImageBitmap(image);
+                    }
+                }
+            }
         }
 
         // Find toolbar
