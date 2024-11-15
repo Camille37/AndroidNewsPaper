@@ -32,11 +32,11 @@ public class ArticleDetailActivity extends AppCompatActivity {
             Glide.with(this).load(article.getImageUrl()).into(detailImage);
         }
 
-        // Trouver la Toolbar
+        // Find toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);  // Définir la Toolbar comme ActionBar
+        setSupportActionBar(toolbar);
 
-        // Activer la flèche de retour (Up button)
+        // Activate return home option
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
@@ -45,7 +45,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();  // Gérer le retour à l'activité précédente
+            onBackPressed();  // Goes back to previous activity
             return true;
         }
         return super.onOptionsItemSelected(item);
