@@ -1,5 +1,6 @@
 package com.example.newspaper;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -7,7 +8,7 @@ import org.json.simple.JSONObject;
 
 import com.example.exceptions.ServerCommunicationError;
 
-public abstract class ModelEntity {
+public abstract class ModelEntity implements Serializable {
     protected int id;
     protected ModelManager mm;
 

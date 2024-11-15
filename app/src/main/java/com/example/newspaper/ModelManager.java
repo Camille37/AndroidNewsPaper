@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -23,7 +24,7 @@ import org.json.simple.parser.ParseException;
 import  com.example.exceptions.AuthenticationError;
 import  com.example.exceptions.ServerCommunicationError;
 
-public class ModelManager {
+public class ModelManager implements Serializable {
 
     private String idUser;
     private String authType;

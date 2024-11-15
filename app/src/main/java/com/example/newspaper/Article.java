@@ -1,19 +1,14 @@
 package com.example.newspaper;
 
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.Serializable;
 import java.util.Hashtable;
-import java.util.List;
-
 import org.json.simple.JSONObject;
-
 import com.example.exceptions.ServerCommunicationError;
 
-public class Article extends ModelEntity{
+public class Article extends ModelEntity implements Serializable {
 
-    private String titleText;
+    private String title;
     private String category;
     private String abstractText;
     private String bodyText;
@@ -34,7 +29,7 @@ public class Article extends ModelEntity{
         try{
             id = Integer.parseInt(jsonArticle.get("id").toString());
             idUser = Integer.parseInt(parseStringFromJson(jsonArticle,"id_user","0"));
-            titleText = parseStringFromJson(jsonArticle,"title","").replaceAll("\\\\","");
+            title = parseStringFromJson(jsonArticle,"title","").replaceAll("\\\\","");
             category = parseStringFromJson(jsonArticle,"category","").replaceAll("\\\\","");
             abstractText = parseStringFromJson(jsonArticle,"abstract","").replaceAll("\\\\","");
             bodyText = parseStringFromJson(jsonArticle,"body","").replaceAll("\\\\","");
@@ -53,13 +48,13 @@ public class Article extends ModelEntity{
         }
     }
 
-    public Article(ModelManager mm, String category, String titleText, String abstractText, String body, String footer){
+    public Article(ModelManager mm, String category, String title, String abstractText, String body, String footer){
         super(mm);
         id = -1;
         this.category = category;
         idUser = Integer.parseInt(mm.getIdUser());
         this.abstractText = abstractText;
-        this.titleText = titleText;
+        this.title = title;
         bodyText = body;
         footerText = footer;
 
@@ -75,8 +70,8 @@ public class Article extends ModelEntity{
         this.id = id;
     }
 
-    public String getTitleText() {
-        return titleText;
+    public String getTitle() {
+        return title;
     }
 
     public String getCategory() {
@@ -85,8 +80,8 @@ public class Article extends ModelEntity{
     public void setCategory(String category) {
         this.category= category;
     }
-    public void setTitleText(String titleText) {
-        this.titleText = titleText;
+    public void setTitle(String title) {
+        this.title = title;
     }
     public String getAbstractText() {
         return abstractText;
@@ -132,7 +127,7 @@ public class Article extends ModelEntity{
     public String toString() {
         return "Article [id=" + getId()
                 //+ "isPublic=" + isPublic + ", isDeleted=" + isDeleted
-                +", titleText=" + titleText
+                +", titleText=" + title
                 +", abstractText=" + abstractText
                 +  ", bodyText="	+ bodyText + ", footerText=" + footerText
                 //+ ", publicationDate=" + Utils.dateToString(publicationDate)
@@ -148,7 +143,7 @@ public class Article extends ModelEntity{
         //res.put("id_user", ""+idUser);
         res.put("category", category);
         res.put("abstract", abstractText);
-        res.put("title", titleText);
+        res.put("title", title);
         //res.put("is_deleted", ""+(isDeleted?1:0));
         res.put("body", bodyText);
         res.put("subtitle", footerText);

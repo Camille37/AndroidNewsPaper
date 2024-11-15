@@ -1,16 +1,16 @@
 package com.example.newspaper;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,22 +23,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Thread t = new Thread(new DownloadArticlesThreads(MainActivity.this));
+        t.start();
 
+        //recyclerView = findViewById(R.id.recyclerView);
+        //adapter = new NewsAdapter();
+        //recyclerView.setAdapter(adapter);
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void finishDownloadUI(List<Article> data){
         recyclerView = findViewById(R.id.recyclerView);
-        adapter = new NewsAdapter(getNewsData());
+        //ProgressBar pb = findViewById(R.id.recyclerView);
+        //pb.setVisibility(View.INVISIBLE);
+        NewsAdapter adapter = new NewsAdapter(this, data);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private List<NewsArticle> getNewsData() {
-        // Fetch news data from your data source
-
-        List<NewsArticle> articles = new ArrayList<>();
-        articles.add(new NewsArticle("Headline 1", "Description 1", "https://example.com/image1.jpg"));
-        articles.add(new NewsArticle("Headline 2", "Description 2", "https://example.com/image2.jpg"));
-        articles.add(new NewsArticle("Headline 3", "Description 3", "https://example.com/image3.jpg"));
-
-        return articles;
+    public void startDownloadUI(){
+        Log.i("dowload","Start dowloading");
+        //ProgressBar pb = findViewById(R.id.main_pb_list_planets);
+        //pb.setVisibility(View.VISIBLE);
     }
 
 }

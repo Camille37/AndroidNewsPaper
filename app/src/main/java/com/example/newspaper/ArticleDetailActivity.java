@@ -1,16 +1,13 @@
 package com.example.newspaper;
 
 
-import android.graphics.PorterDuff;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.bumptech.glide.Glide;
 
 public class ArticleDetailActivity extends AppCompatActivity {
     @Override
@@ -19,7 +16,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_article_detail);
 
         // Retrieve the article
-        NewsArticle article = (NewsArticle) getIntent().getSerializableExtra("article");
+        Article article = (Article) getIntent().getSerializableExtra("article");
 
         ImageView detailImage = findViewById(R.id.detailImage);
         TextView detailTitle = findViewById(R.id.detailTitle);
@@ -27,9 +24,18 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
         // Fulfill Views with data from the article
         if (article != null) {
-            detailTitle.setText(article.getTitle());
-            detailDescription.setText(article.getDescription());
-            Glide.with(this).load(article.getImageUrl()).into(detailImage);
+            if (article.getTitle()!=null) {
+                detailTitle.setText(article.getTitle());
+            }
+            if (article.getAbstractText()!=null) {
+                detailDescription.setText(article.getAbstractText());
+            }
+            // TODO
+            // Convert image from string b64 to Bitmap
+            //if (article.getImage().getDescription()!=null) {
+            //    Bitmap image = Utils.base64StringToImg(article.getImage().getDescription());
+            //    detailImage.setImageBitmap(image);
+            //}
         }
 
         // Find toolbar

@@ -1,9 +1,10 @@
 package com.example.newspaper;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import org.json.simple.JSONObject;
 
-public class Image extends ModelEntity{
+public class Image extends ModelEntity implements Serializable {
     private int order;
     private String description;
     private int idArticle;
