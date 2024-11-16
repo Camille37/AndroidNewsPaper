@@ -2,6 +2,7 @@ package com.example.newspaper;
 
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Hashtable;
 import org.json.simple.JSONObject;
 import com.example.exceptions.ServerCommunicationError;
@@ -17,6 +18,8 @@ public class Article extends ModelEntity implements Serializable {
     private Image mainImage;
     private String imageDescription;
     private String thumbnail;
+
+    private Date publicationDate;
 
     private String parseStringFromJson(JSONObject jsonArticle, String key, String def){
         Object in = jsonArticle.getOrDefault(key,def);
@@ -37,6 +40,7 @@ public class Article extends ModelEntity implements Serializable {
 
             imageDescription = parseStringFromJson(jsonArticle,"image_description","").replaceAll("\\\\","");
             thumbnail = parseStringFromJson(jsonArticle,"thumbnail_image","").replaceAll("\\\\","");
+            publicationDate = Utils.dateFromString(parseStringFromJson(jsonArticle, "update_date","").replaceAll("\\\\",""));
 
             String imageData = parseStringFromJson(jsonArticle,"image_data","").replaceAll("\\\\","");
 
@@ -48,7 +52,7 @@ public class Article extends ModelEntity implements Serializable {
         }
     }
 
-    public Article(ModelManager mm, String category, String title, String abstractText, String body, String footer){
+    public Article(ModelManager mm, String category, String title, String abstractText, String body, String footer, String publicationDate){
         super(mm);
         id = -1;
         this.category = category;
@@ -57,6 +61,7 @@ public class Article extends ModelEntity implements Serializable {
         this.title = title;
         bodyText = body;
         footerText = footer;
+        publicationDate = publicationDate;
 
     }
 
@@ -123,14 +128,19 @@ public class Article extends ModelEntity implements Serializable {
         return img;
     }
 
+    public Date getPublicationDate(){ return publicationDate; }
+
+    public void setPublicationDate(Date publicationDate){ this.publicationDate = publicationDate; }
+
     @Override
     public String toString() {
         return "Article [id=" + getId()
                 //+ "isPublic=" + isPublic + ", isDeleted=" + isDeleted
+                +", category=" + category
                 +", titleText=" + title
                 +", abstractText=" + abstractText
                 +  ", bodyText="	+ bodyText + ", footerText=" + footerText
-                //+ ", publicationDate=" + Utils.dateToString(publicationDate)
+                + ", publicationDate=" + Utils.dateToString(publicationDate)
                 +", image_description=" + imageDescription
                 +", image_data=" + mainImage
                 +", thumbnail=" + thumbnail
@@ -157,7 +167,7 @@ public class Article extends ModelEntity implements Serializable {
         else if (imageDescription!=null && !imageDescription.isEmpty())
             res.put("image_description", imageDescription);
 
-        //res.put("publication_date", publicationDate==null?null:Utils.dateToString(publicationDate));
+            res.put("publication_date", publicationDate==null?null:Utils.dateToString(publicationDate));
         return res;
     }
 }

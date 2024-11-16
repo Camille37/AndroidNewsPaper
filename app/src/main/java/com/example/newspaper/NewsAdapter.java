@@ -37,26 +37,26 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
     @NonNull
     @Override
     public CardView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View card = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout, parent, false);
-        CardView cardView = new CardView(card);
-        return cardView;
+        View cardView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout, parent, false);
+        CardView card = new CardView(cardView);
+        return card;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CardView cardView, int position) {
+    public void onBindViewHolder(@NonNull CardView card, int position) {
         Article article = articles.get(position);
 
         // Bind the data to the UI components
         if(article.getTitle()!=null) {
-            cardView.getArticleTitle().setText(article.getTitle());
+            card.getArticleTitle().setText(article.getTitle());
         }
 
         if(article.getCategory()!=null) {
-            cardView.getArticleCategory().setText(article.getCategory());
+            card.getArticleCategory().setText(article.getCategory());
         }
 
         if(article.getAbstractText()!=null) {
-            cardView.getArticleDescription().setText(article.getAbstractText());
+            card.getArticleDescription().setText(article.getAbstractText());
         }
 
         // Convert image from string b64 to Bitmap
@@ -65,13 +65,13 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
             if(image_thumbnail!=null && !image_thumbnail.isEmpty()) {
                 Bitmap image = Utils.base64StringToImg(image_thumbnail);
                 if(image!=null) {
-                    cardView.getArticleImage().setImageBitmap(image);
+                    card.getArticleImage().setImageBitmap(image);
                 }
             }
         }
 
         // Handle the click event
-        cardView.itemView.setOnClickListener(new View.OnClickListener() {
+        card.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ArticleDetailActivity.class);
@@ -86,20 +86,20 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
         return articles.size();
     }
 
-//    public static class ViewHolder extends RecyclerView.ViewHolder {
-//        TextView articleCategory;
-//        ImageView articleImage;
-//        TextView articleTitle;
-//        TextView articleDescription;
-//
-//        public ViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            articleImage = itemView.findViewById(R.id.articleImage);
-//            articleTitle = itemView.findViewById(R.id.articleTitle);
-//            articleCategory = itemView.findViewById(R.id.articleCategory);
-//            articleDescription = itemView.findViewById(R.id.articleDescription);
-//        }
-//    }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView articleCategory;
+        ImageView articleImage;
+        TextView articleTitle;
+        TextView articleDescription;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            articleImage = itemView.findViewById(R.id.articleImage);
+            articleTitle = itemView.findViewById(R.id.articleTitle);
+            articleCategory = itemView.findViewById(R.id.articleCategory);
+            articleDescription = itemView.findViewById(R.id.articleDescription);
+        }
+    }
 
     public void updateData(List<Article> articles, String category) {
         List<Article> filteredArticles = new ArrayList<>();

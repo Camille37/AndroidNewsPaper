@@ -2,6 +2,8 @@ package com.example.newspaper;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -17,6 +19,10 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_MYSQL);
         Date date = sdf.parse(stringDate);
         return date;
+    }
+
+    public static Spanned insertHtmlText(String text){
+        return Html.fromHtml(text,Html.FROM_HTML_MODE_LEGACY);
     }
 
     public static String dateToString(Date date){
