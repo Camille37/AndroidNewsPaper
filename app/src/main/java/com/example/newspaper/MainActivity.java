@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startDownloadUI(){
-        Log.i("dowload","Start dowloading");
+        Log.i("download","Start downloading");
         //ProgressBar pb = findViewById(R.id.main_pb_list_planets);
         //pb.setVisibility(View.VISIBLE);
     }

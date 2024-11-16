@@ -25,7 +25,7 @@ import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<CardView> {
     private List<Article> articles;
     private MainActivity ma;
 
@@ -36,26 +36,27 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout, parent, false);
-        return new ViewHolder(view);
+    public CardView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View card = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout, parent, false);
+        CardView cardView = new CardView(card);
+        return cardView;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CardView cardView, int position) {
         Article article = articles.get(position);
 
         // Bind the data to the UI components
         if(article.getTitle()!=null) {
-            holder.articleTitle.setText(article.getTitle());
+            cardView.getArticleTitle().setText(article.getTitle());
         }
 
         if(article.getCategory()!=null) {
-            holder.articleCategory.setText(article.getCategory());
+            cardView.getArticleCategory().setText(article.getCategory());
         }
 
         if(article.getAbstractText()!=null) {
-            holder.articleDescription.setText(article.getAbstractText());
+            cardView.getArticleDescription().setText(article.getAbstractText());
         }
 
         // Convert image from string b64 to Bitmap
@@ -64,13 +65,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             if(image_thumbnail!=null && !image_thumbnail.isEmpty()) {
                 Bitmap image = Utils.base64StringToImg(image_thumbnail);
                 if(image!=null) {
-                    holder.articleImage.setImageBitmap(image);
+                    cardView.getArticleImage().setImageBitmap(image);
                 }
             }
         }
 
         // Handle the click event
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        cardView.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ArticleDetailActivity.class);
@@ -85,20 +86,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         return articles.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView articleCategory;
-        ImageView articleImage;
-        TextView articleTitle;
-        TextView articleDescription;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            articleImage = itemView.findViewById(R.id.articleImage);
-            articleTitle = itemView.findViewById(R.id.articleTitle);
-            articleCategory = itemView.findViewById(R.id.articleCategory);
-            articleDescription = itemView.findViewById(R.id.articleDescription);
-        }
-    }
+//    public static class ViewHolder extends RecyclerView.ViewHolder {
+//        TextView articleCategory;
+//        ImageView articleImage;
+//        TextView articleTitle;
+//        TextView articleDescription;
+//
+//        public ViewHolder(@NonNull View itemView) {
+//            super(itemView);
+//            articleImage = itemView.findViewById(R.id.articleImage);
+//            articleTitle = itemView.findViewById(R.id.articleTitle);
+//            articleCategory = itemView.findViewById(R.id.articleCategory);
+//            articleDescription = itemView.findViewById(R.id.articleDescription);
+//        }
+//    }
 
     public void updateData(List<Article> articles, String category) {
         List<Article> filteredArticles = new ArrayList<>();
