@@ -4,10 +4,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,44 +23,52 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private NewsAdapter adapter;
-    private List<Article> allArticles = new ArrayList<>(); // Liste globale pour tous les articles
+    private List<Article> allArticles = new ArrayList<>();
+
+    private String[] categories = {"All", "National", "Economy","Sports", "Technology"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Télécharger les articles
+        // Download articles
         Thread t = new Thread(new DownloadArticlesThreads(MainActivity.this));
         t.start();
 
-        // Configurer les boutons de filtre
-        Button buttonAll = findViewById(R.id.buttonAll);
-        Button buttonNational = findViewById(R.id.buttonNational);
-        Button buttonEconomy = findViewById(R.id.buttonEconomy);
-        Button buttonSports = findViewById(R.id.buttonSports);
-        Button buttonTechnology = findViewById(R.id.buttonTechnology);
+        // Create dropdown button to select categories
+        Spinner spinner = findViewById(R.id.category_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_spinner_item,categories);
 
-        buttonAll.setOnClickListener(v -> filterArticlesByCategory("All"));
-        buttonNational.setOnClickListener(v -> filterArticlesByCategory("National"));
-        buttonEconomy.setOnClickListener(v -> filterArticlesByCategory("Economy"));
-        buttonSports.setOnClickListener(v -> filterArticlesByCategory("Sports"));
-        buttonTechnology.setOnClickListener(v -> filterArticlesByCategory("Technology"));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 
     public void finishDownloadUI(List<Article> data) {
         recyclerView = findViewById(R.id.recyclerView);
 
-        allArticles.clear();
-        allArticles.addAll(data);
+        this.allArticles.clear();
+        this.allArticles.addAll(data);
 
-        if (adapter == null) {
-            adapter = new NewsAdapter(this, allArticles);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        } else {
-            adapter.updateData(allArticles,"ALL");
-        }
+        adapter = new NewsAdapter(this, allArticles);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Link filtering with dropdown button to select categories
+        Spinner spinner = findViewById(R.id.category_spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("category",categories[position]);
+                filterArticlesByCategory(allArticles, categories[position]);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                filterArticlesByCategory(allArticles,"ALL");
+            }
+        });
     }
 
     public void startDownloadUI(){
@@ -66,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         //pb.setVisibility(View.VISIBLE);
     }
 
-    private void filterArticlesByCategory(String category) {
+    private void filterArticlesByCategory(List<Article> allArticles, String category) {
         adapter.updateData(allArticles, category);
     }
 }

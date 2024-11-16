@@ -1,6 +1,5 @@
 package com.example.newspaper;
 
-
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
