@@ -45,6 +45,7 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
     @Override
     public void onBindViewHolder(@NonNull CardView card, int position) {
         Article article = articles.get(position);
+        card.setArticle(article);
 
         // Bind the data to the UI components
         if(article.getTitle()!=null) {

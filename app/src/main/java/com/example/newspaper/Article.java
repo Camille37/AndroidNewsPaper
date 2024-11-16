@@ -1,6 +1,8 @@
 package com.example.newspaper;
 
 
+import android.annotation.SuppressLint;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Hashtable;
@@ -147,6 +149,7 @@ public class Article extends ModelEntity implements Serializable {
                 + "]";
     }
 
+    @SuppressLint("SuspiciousIndentation")
     public Hashtable<String,String> getAttributes(){
         Hashtable<String,String> res = new Hashtable<String,String>();
         //res.put("is_public", ""+(isPublic?1:0));

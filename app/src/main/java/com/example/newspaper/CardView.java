@@ -14,12 +14,18 @@ public class CardView extends RecyclerView.ViewHolder {
     private TextView articleTitle;
     private TextView articleDescription;
 
+    private Article article;
+
     public CardView(@NonNull View itemView) {
         super(itemView);
         articleImage = itemView.findViewById(R.id.articleImage);
         articleTitle = itemView.findViewById(R.id.articleTitle);
         articleCategory = itemView.findViewById(R.id.articleCategory);
         articleDescription = itemView.findViewById(R.id.articleDescription);
+    }
+
+    public void setArticle(Article article){
+        this.article = article;
     }
 
     public TextView getArticleCategory() {
