@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.BreakIterator;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
@@ -46,6 +48,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         if(article.getTitle()!=null) {
             holder.articleTitle.setText(article.getTitle());
         }
+
+        if(article.getCategory()!=null) {
+            holder.articleCategory.setText(article.getCategory());
+        }
+
         if(article.getAbstractText()!=null) {
             holder.articleDescription.setText(article.getAbstractText());
         }
@@ -78,6 +85,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView articleCategory;
         ImageView articleImage;
         TextView articleTitle;
         TextView articleDescription;
@@ -86,6 +94,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             super(itemView);
             articleImage = itemView.findViewById(R.id.articleImage);
             articleTitle = itemView.findViewById(R.id.articleTitle);
+            articleCategory = itemView.findViewById(R.id.articleCategory);
             articleDescription = itemView.findViewById(R.id.articleDescription);
         }
     }
