@@ -21,8 +21,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
@@ -32,6 +37,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     public NewsAdapter(MainActivity ma, List<Article> articles) {
         this.ma = ma;
         this.articles = articles;
+
+        // Chronologic sort of the articles before display
+        Collections.sort(articles, new Comparator<Article>() {
+            @Override
+            public int compare(Article art1, Article art2) {
+                return -(art1.getPublicationDate().compareTo(art2.getPublicationDate())); // Compare les dates
+            }
+        });
     }
 
     @NonNull
@@ -56,6 +69,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
         if(article.getAbstractText()!=null) {
             holder.articleDescription.setText(Utils.insertHtmlText(article.getAbstractText()));
+        }
+
+        if(article.getPublicationDate()!=null){
+            Date date = article.getPublicationDate();
+            holder.articleDate.setText(Utils.dateToString(date));
         }
 
         // Convert image from string b64 to Bitmap
@@ -91,12 +109,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         TextView articleTitle;
         TextView articleDescription;
 
+        TextView articleDate;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             articleImage = itemView.findViewById(R.id.articleImage);
             articleTitle = itemView.findViewById(R.id.articleTitle);
             articleCategory = itemView.findViewById(R.id.articleCategory);
             articleDescription = itemView.findViewById(R.id.articleDescription);
+            articleDate = itemView.findViewById(R.id.articleDate);
         }
     }
 
