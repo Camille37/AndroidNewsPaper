@@ -2,6 +2,7 @@ package com.example.newspaper;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -25,10 +26,10 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // Fulfill Views with data from the article
         if (article != null) {
             if (article.getTitle()!=null) {
-                detailTitle.setText(article.getTitle());
+                detailTitle.setText(Utils.insertHtmlText(article.getTitle()));
             }
             if (article.getAbstractText()!=null) {
-                detailDescription.setText(article.getAbstractText());
+                detailDescription.setText(Utils.insertHtmlText(article.getAbstractText()));
             }
 
             // Convert image from string b64 to Bitmap

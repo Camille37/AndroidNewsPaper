@@ -47,7 +47,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
         // Bind the data to the UI components
         if(article.getTitle()!=null) {
-            holder.articleTitle.setText(article.getTitle());
+            holder.articleTitle.setText(Utils.insertHtmlText(article.getTitle()));
         }
 
         if(article.getCategory()!=null) {
@@ -55,7 +55,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
 
         if(article.getAbstractText()!=null) {
-            holder.articleDescription.setText(article.getAbstractText());
+            holder.articleDescription.setText(Utils.insertHtmlText(article.getAbstractText()));
         }
 
         // Convert image from string b64 to Bitmap
