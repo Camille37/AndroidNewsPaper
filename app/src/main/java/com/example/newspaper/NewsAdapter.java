@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.BreakIterator;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
@@ -97,5 +98,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             articleCategory = itemView.findViewById(R.id.articleCategory);
             articleDescription = itemView.findViewById(R.id.articleDescription);
         }
+    }
+
+    public void updateData(List<Article> articles, String category) {
+        List<Article> filteredArticles = new ArrayList<>();
+        if (category.equals("All")) {
+            filteredArticles.addAll(articles);
+        } else {
+            for (Article article : articles) {
+                if (article.getCategory().equalsIgnoreCase(category)) {
+                    filteredArticles.add(article);
+                }
+            }
+        }
+        this.articles = filteredArticles; // Update internal list
+        notifyDataSetChanged(); // Notify adapter data changed
     }
 }
