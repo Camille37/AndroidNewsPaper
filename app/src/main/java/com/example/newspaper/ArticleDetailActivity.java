@@ -58,9 +58,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
     private View detailFooterBar;
 
-    //private static final int CAMERA_PERMISSION_CODE = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
-
     private static final int REQUEST_GALLERY_PERMISSION = 100;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
 
@@ -191,10 +188,28 @@ public class ArticleDetailActivity extends AppCompatActivity {
     }
 
     private void requestGalleryPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GALLERY_PERMISSION);
-        } else {
-            choosePhotoFromGallery();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14 (API level 34) or higher
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED}, REQUEST_GALLERY_PERMISSION);
+            } else {
+                // Permission already granted, proceed with accessing the gallery
+                choosePhotoFromGallery();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13 (API level 33)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO}, REQUEST_GALLERY_PERMISSION);
+            } else {
+                // Permission already granted, proceed with accessing the gallery
+                choosePhotoFromGallery();
+            }
+        } else { // Android 12L (API level 32) or lower
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GALLERY_PERMISSION);
+            } else {
+                // Permission already granted, proceed with accessing the gallery
+                choosePhotoFromGallery();
+            }
         }
     }
 
@@ -249,10 +264,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 String imageBase64 = convertBitmapToBase64(imageBitmap);
                 detailImage.setImageBitmap(imageBitmap);
-                // Save article's image
-                //Thread t = new Thread(new SaveArticleThread(ArticleDetailActivity.this, article, imageBase64));
-                //t.start();
-                //article.addImage(convertBitmapToBase64(imageBitmap),"");
             }
         }
     }
