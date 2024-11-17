@@ -237,13 +237,21 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 }
                 ImageView artImage = findViewById(R.id.detailImage);
                 artImage.setImageBitmap(selectedImageBitmap);
+                String imageBase64 = convertBitmapToBase64(selectedImageBitmap);
+                // Save image & article
+                int article_id = (int) getIntent().getExtras().get("article_id");
+                Thread t = new Thread(new SaveArticleThread(ArticleDetailActivity.this, article_id, imageBase64 ));
+                t.start();
                 //article.addImage(convertBitmapToBase64(selectedImageBitmap),selectedImageUri.toString());
 
             } else if (requestCode == CAMERA_REQUEST_CODE) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-
+                String imageBase64 = convertBitmapToBase64(imageBitmap);
                 detailImage.setImageBitmap(imageBitmap);
+                // Save article's image
+                //Thread t = new Thread(new SaveArticleThread(ArticleDetailActivity.this, article, imageBase64));
+                //t.start();
                 //article.addImage(convertBitmapToBase64(imageBitmap),"");
             }
         }

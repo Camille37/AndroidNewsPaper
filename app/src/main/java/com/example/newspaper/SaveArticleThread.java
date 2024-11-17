@@ -1,30 +1,29 @@
 package com.example.newspaper;
 
 import android.util.Log;
+
 import com.example.exceptions.AuthenticationError;
+
 import java.util.Properties;
 
-public class DownloadOneArticleThreads implements Runnable{
-    private ArticleDetailActivity aa;
+public class SaveArticleThread implements Runnable{
 
-    private int articleId;
+    private ArticleDetailActivity aa;
+    private int articleID;
     private final String service_url="https://sanger.dia.fi.upm.es/pui-rest-news/";
     private final String login_user="DEV_TEAM_06";
     private final String login_pwd = "123456@06";
 
-    public DownloadOneArticleThreads(ArticleDetailActivity aa, int articleId){
+    private String imageBase64;
+
+    public SaveArticleThread (ArticleDetailActivity aa, int articleID, String imageBase64) {
         this.aa = aa;
-        this.articleId = articleId;
+        this.articleID = articleID;
+        this.imageBase64 = imageBase64;
     }
 
     @Override
     public void run() {
-        aa.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                aa.startDownloadUI();
-            }
-        });
 
         Properties prop = new Properties();
         prop.setProperty(ModelManager.ATTR_LOGIN_USER, login_user);
@@ -36,18 +35,19 @@ public class DownloadOneArticleThreads implements Runnable{
 
         try{
             mm = new ModelManager(prop);
+            Article article = mm.getArticle(articleID);
+            Image newImage = new Image(mm, 1, "new image", articleID, imageBase64);
+            int i = mm.saveImage(newImage);
         }catch (AuthenticationError e) {
             Log.e("authentication error", e.getMessage());
             System.exit(-1);
         }
 
-        Article article = mm.getArticle(articleId);
-        Log.i("detail_article", article.toString());
-        aa.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                aa.finishDownloadUI(article);
-            }
-        });
+//        aa.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                aa.finishDownloadUI(article);
+//            }
+//        });
     }
 }

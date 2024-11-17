@@ -436,7 +436,7 @@ public class ModelManager implements Serializable {
         }
     }
 
-    private int saveImage(Image i) throws ServerCommunicationError{
+    public int saveImage(Image image) throws ServerCommunicationError{
         try{
             String parameters =  "";
             String request = serviceUrl + "article/image";
@@ -454,7 +454,7 @@ public class ModelManager implements Serializable {
             connection.setRequestProperty("charset", "utf-8");
             connection.setUseCaches (false);
 
-            writeJSONParams(connection, i.toJSON());
+            writeJSONParams(connection, image.toJSON());
 
             int HttpResult =connection.getResponseCode();
             if(HttpResult ==HttpURLConnection.HTTP_OK){
@@ -468,7 +468,7 @@ public class ModelManager implements Serializable {
                 throw new ServerCommunicationError(connection.getResponseMessage());
             }
         } catch (Exception e) {
-            Logger.log(Logger.ERROR,"Saving image ["+i+"] : " + e.getClass() + " ( "+e.getMessage() + ")");
+            Logger.log(Logger.ERROR,"Saving image ["+image+"] : " + e.getClass() + " ( "+e.getMessage() + ")");
             throw new ServerCommunicationError(e.getClass() + " ( "+e.getMessage() + ")");
         }
     }
