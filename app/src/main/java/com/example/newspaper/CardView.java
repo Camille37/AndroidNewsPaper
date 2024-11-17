@@ -14,6 +14,8 @@ public class CardView extends RecyclerView.ViewHolder {
     private TextView articleTitle;
     private TextView articleDescription;
 
+    private TextView articleDate;
+
     private Article article;
 
     public CardView(@NonNull View itemView) {
@@ -22,6 +24,7 @@ public class CardView extends RecyclerView.ViewHolder {
         articleTitle = itemView.findViewById(R.id.articleTitle);
         articleCategory = itemView.findViewById(R.id.articleCategory);
         articleDescription = itemView.findViewById(R.id.articleDescription);
+        articleDate = itemView.findViewById(R.id.articleDate);
     }
 
     public void setArticle(Article article){
@@ -42,6 +45,10 @@ public class CardView extends RecyclerView.ViewHolder {
 
     public TextView getArticleDescription() {
         return articleDescription;
+    }
+
+    public TextView getArticleDate() {
+        return articleDate;
     }
 
 }

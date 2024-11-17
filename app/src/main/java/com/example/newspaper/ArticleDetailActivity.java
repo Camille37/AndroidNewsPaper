@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,40 +39,99 @@ import com.example.newspaper.ui.login.LoginActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 
 public class ArticleDetailActivity extends AppCompatActivity {
+
+    private TextView detailCategory;
+    private ImageView detailImage;
+    private TextView detailTitle;
+    private TextView detailSubTitle;
+    private TextView detailDescription;
+    private TextView detailBody;
+    private TextView detailUserId;
+    private TextView detailDate;
+
+    private View detailFooterBar;
 
     //private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private int SELECT_PICTURE = 200;
 
-    private Article art;
+    private Article article;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
 
-        art = (Article) getIntent().getExtras().get("article");
-
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
-        // Retrieve the article
-        Article article = (Article) getIntent().getSerializableExtra("article");
+        // Import all the view elements
+        detailCategory = findViewById(R.id.detailCategory);
+        detailImage = findViewById(R.id.detailImage);
+        detailTitle = findViewById(R.id.detailTitle);
+        detailSubTitle = findViewById(R.id.detailSubTitle);
+        detailDescription = findViewById(R.id.detailDescription);
+        detailBody = findViewById(R.id.detailBody);
+        detailUserId = findViewById(R.id.detailUserId);
+        detailDate = findViewById(R.id.detailDate);
+        detailFooterBar = findViewById(R.id.detailFooterBar);
 
-        ImageView detailImage = findViewById(R.id.detailImage);
-        TextView detailTitle = findViewById(R.id.detailTitle);
-        TextView detailDescription = findViewById(R.id.detailDescription);
+        // Retrieve the article
+        int article_id = (int) getIntent().getExtras().get("article_id");
+
+        // Download articles
+        Thread t = new Thread(new DownloadOneArticleThreads(ArticleDetailActivity.this, article_id));
+        t.start();
+
+        // Find toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Activate return home option
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_back_24px);
+    }
+
+    public void finishDownloadUI(Article article){
+        // Hide progressBar
+        ProgressBar pb = findViewById(R.id.detail_pb);
+        pb.setVisibility(View.INVISIBLE);
 
         // Fulfill Views with data from the article
         if (article != null) {
+            String userId = "User Id :" + article.getIdUser();
+            detailUserId.setText(userId);
+            //detailUserId.setVisibility(View.VISIBLE);
+            detailFooterBar.setVisibility(View.VISIBLE);
+            if (article.getCategory()!=null) {
+                detailCategory.setText((article.getCategory()));
+                detailCategory.setVisibility(View.VISIBLE);
+            }
             if (article.getTitle()!=null) {
                 detailTitle.setText(Utils.insertHtmlText(article.getTitle()));
+                //detailTitle.setVisibility(View.VISIBLE);
+            }
+            if (article.getSubtitle()!=null) {
+                detailSubTitle.setText(Utils.insertHtmlText(article.getSubtitle()));
+                //detailSubTitle.setVisibility(View.VISIBLE);
             }
             if (article.getAbstractText()!=null) {
                 detailDescription.setText(Utils.insertHtmlText(article.getAbstractText()));
+                //detailDescription.setVisibility(View.VISIBLE);
+            }
+            if(article.getBodyText()!=null){
+                detailBody.setText(Utils.insertHtmlText(article.getBodyText()));
+                //detailBody.setVisibility(View.VISIBLE);
+            }
+            if (article.getPublicationDate()!=null) {
+                Date date = article.getPublicationDate();
+                detailDate.setText(Utils.dateToString(date));
+                //detailDate.setVisibility(View.VISIBLE);
             }
 
             // Convert image from string b64 to Bitmap
@@ -84,6 +144,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     }
                 }
             }
+            //detailImage.setVisibility(View.VISIBLE);
 
         }
 
@@ -97,15 +158,25 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 imageChooser();
             }
         });
+    }
 
-        // Find toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public void startDownloadUI(){
+        Log.i("download","Start downloading");
 
-        // Activate return home option
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_back_24px);
+        // Set view elements on INVISIBLE to avoid strange displays while loading
+        detailCategory.setVisibility(View.INVISIBLE);
+        //detailImage.setVisibility(View.INVISIBLE);
+        //detailTitle.setVisibility(View.INVISIBLE);
+        //detailSubTitle.setVisibility(View.INVISIBLE);
+        //detailDescription.setVisibility(View.INVISIBLE);
+        //detailBody.setVisibility(View.INVISIBLE);
+        //detailUserId.setVisibility(View.INVISIBLE);
+        //detailDate.setVisibility(View.INVISIBLE);
+        detailFooterBar.setVisibility(View.INVISIBLE);
+
+        // Show progressBar
+        ProgressBar pb = findViewById(R.id.detail_pb);
+        pb.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -205,7 +276,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                         }
                         ImageView artImage = findViewById(R.id.detailImage);
                         artImage.setImageBitmap(selectedImageBitmap);
-                        art.addImage(convertBitmapToBase64(selectedImageBitmap),selectedImageUri.toString());
+                        article.addImage(convertBitmapToBase64(selectedImageBitmap),selectedImageUri.toString());
                     }
                 }
             });

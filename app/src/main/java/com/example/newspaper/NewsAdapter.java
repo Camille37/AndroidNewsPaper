@@ -23,6 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<CardView> {
@@ -31,6 +34,15 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
 
     public NewsAdapter(MainActivity ma, List<Article> articles) {
         this.ma = ma;
+
+        // Chronologic sort of the articles before display
+        Collections.sort(articles, new Comparator<Article>() {
+            @Override
+            public int compare(Article art1, Article art2) {
+                return -(art1.getPublicationDate().compareTo(art2.getPublicationDate())); // Compare les dates
+            }
+        });
+
         this.articles = articles;
     }
 
@@ -49,7 +61,12 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
 
         // Bind the data to the UI components
         if(article.getTitle()!=null) {
-            card.getArticleTitle().setText(article.getTitle());
+            card.getArticleTitle().setText(Utils.insertHtmlText(article.getTitle()));
+        }
+
+        if(article.getPublicationDate()!=null){
+            Date date = article.getPublicationDate();
+            card.getArticleDate().setText(Utils.dateToString(date));
         }
 
         if(article.getCategory()!=null) {
@@ -57,7 +74,7 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
         }
 
         if(article.getAbstractText()!=null) {
-            card.getArticleDescription().setText(article.getAbstractText());
+            card.getArticleDescription().setText(Utils.insertHtmlText(article.getAbstractText()));
         }
 
         // Convert image from string b64 to Bitmap
@@ -76,7 +93,7 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ArticleDetailActivity.class);
-                intent.putExtra("article", article);
+                intent.putExtra("article_id", article.getId());
                 v.getContext().startActivity(intent);
             }
         });

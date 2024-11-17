@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void finishDownloadUI(List<Article> data) {
+        // Hide progressBar
+        ProgressBar pb = findViewById(R.id.main_pb);
+        pb.setVisibility(View.INVISIBLE);
+
         recyclerView = findViewById(R.id.recyclerView);
 
         this.allArticles.clear();
@@ -87,8 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void startDownloadUI(){
         Log.i("download","Start downloading");
-        //ProgressBar pb = findViewById(R.id.main_pb_list_planets);
-        //pb.setVisibility(View.VISIBLE);
+
+        // Show progressBar
+        ProgressBar pb = findViewById(R.id.main_pb);
+        pb.setVisibility(View.VISIBLE);
     }
 
     private void filterArticlesByCategory(List<Article> allArticles, String category) {

@@ -21,6 +21,8 @@ import com.example.exceptions.ServerCommunicationError;
 public class Article extends ModelEntity implements Serializable {
 
     private String title;
+
+    private String subtitle;
     private String category;
     private String abstractText;
     private String bodyText;
@@ -44,6 +46,8 @@ public class Article extends ModelEntity implements Serializable {
             id = Integer.parseInt(jsonArticle.get("id").toString());
             idUser = Integer.parseInt(parseStringFromJson(jsonArticle,"id_user","0"));
             title = parseStringFromJson(jsonArticle,"title","").replaceAll("\\\\","");
+            subtitle = parseStringFromJson(jsonArticle,"subtitle","").replaceAll("\\\\","");
+
             category = parseStringFromJson(jsonArticle,"category","").replaceAll("\\\\","");
             abstractText = parseStringFromJson(jsonArticle,"abstract","").replaceAll("\\\\","");
             bodyText = parseStringFromJson(jsonArticle,"body","").replaceAll("\\\\","");
@@ -63,13 +67,14 @@ public class Article extends ModelEntity implements Serializable {
         }
     }
 
-    public Article(ModelManager mm, String category, String title, String abstractText, String body, String footer, String publicationDate){
+    public Article(ModelManager mm, String category, String title, String subtitle, String abstractText, String body, String footer, String publicationDate){
         super(mm);
         id = -1;
         this.category = category;
         idUser = Integer.parseInt(mm.getIdUser());
         this.abstractText = abstractText;
         this.title = title;
+        this.subtitle = subtitle;
         bodyText = body;
         footerText = footer;
         publicationDate = publicationDate;
@@ -90,6 +95,8 @@ public class Article extends ModelEntity implements Serializable {
         return title;
     }
 
+    public String getSubtitle(){ return subtitle; }
+
     public String getCategory() {
         return category;
     }
@@ -99,6 +106,10 @@ public class Article extends ModelEntity implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+    public void setSubTitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
     public String getAbstractText() {
         return abstractText;
     }
@@ -147,12 +158,14 @@ public class Article extends ModelEntity implements Serializable {
     @Override
     public String toString() {
         return "Article [id=" + getId()
+                + ", userId=" + idUser
                 //+ "isPublic=" + isPublic + ", isDeleted=" + isDeleted
                 +", category=" + category
                 +", titleText=" + title
+                +", subTitleText=" + (subtitle!=null ? subtitle : "")
                 +", abstractText=" + abstractText
                 +  ", bodyText="	+ bodyText + ", footerText=" + footerText
-                + ", publicationDate=" + Utils.dateToString(publicationDate)
+                + ", publicationDate=" + (publicationDate!= null ? Utils.dateToString(publicationDate) : "")
                 +", image_description=" + imageDescription
                 +", image_data=" + mainImage
                 +", thumbnail=" + thumbnail
