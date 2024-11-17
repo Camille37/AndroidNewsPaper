@@ -87,6 +87,9 @@ public class NewsAdapter extends RecyclerView.Adapter<CardView> {
                 }
             }
         }
+        else{
+            card.getArticleImage().setImageBitmap(BitmapFactory.decodeResource(ma.getResources(), R.drawable.picture_placeholder));
+        }
 
         // Handle the click event
         card.itemView.setOnClickListener(new View.OnClickListener() {
