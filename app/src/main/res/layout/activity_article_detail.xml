@@ -71,6 +71,34 @@
                             app:layout_constraintTop_toTopOf="@+id/scrollView"
                             android:src="@drawable/picture_placeholder"/>
 
+                        <TextView
+                            android:id="@+id/detailTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="16dp"
+                            android:paddingHorizontal="16dp"
+                            android:paddingBottom="6dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/detailImage"
+                            tools:text="Sample Title" />
+
+                        <TextView
+                            android:id="@+id/detailSubTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="16dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/detailTitle"
+                            tools:text="Sample Sub Title" />
+
                         <Button
                             android:id="@+id/detailCategory"
                             android:layout_width="wrap_content"
@@ -90,39 +118,11 @@
                             tools:text="Category" />
 
                         <TextView
-                            android:id="@+id/detailTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="16dp"
-                            android:paddingBottom="6dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/detailImage"
-                            tools:text="Sample Title" />
-
-                        <TextView
-                            android:id="@+id/detailSubTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="16dp"
-                            android:paddingBottom="16dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/detailTitle"
-                            tools:text="Sample Sub Title" />
-
-                        <TextView
                             android:id="@+id/detailDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingBottom="16dp"
                             android:paddingHorizontal="16dp"
-                            android:paddingVertical="6dp"
                             android:textColor="@android:color/darker_gray"
                             android:textStyle="italic"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -135,6 +135,7 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="16dp"
+                            android:paddingBottom="7dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             tools:text="Sample description goes here, providing details of the article for a more in-depth read." />
