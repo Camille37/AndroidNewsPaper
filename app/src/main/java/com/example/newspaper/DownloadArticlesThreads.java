@@ -7,6 +7,7 @@ import com.example.exceptions.AuthenticationError;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -46,6 +47,13 @@ public class DownloadArticlesThreads implements Runnable{
 
             // get list of articles for logged user
             List<Article> article_list = mm.getArticles();
+            // Filter non-relevant articles
+            List<Article> filteredArticles = new ArrayList<>();
+            for (Article article : article_list) {
+                if (isRelevantArticle(article)) {
+                    filteredArticles.add(article);
+                }
+            }
             for (Article article : article_list) {
                 System.out.println(article);
                 Log.i("articles", article.toString());
@@ -53,8 +61,12 @@ public class DownloadArticlesThreads implements Runnable{
             ma.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ma.finishDownloadUI(article_list);
+                    ma.finishDownloadUI(filteredArticles);
                 }
             });
+        }
+
+        public Boolean isRelevantArticle(Article article){
+            return !article.getTitle().contains("fasd");
         }
 }
