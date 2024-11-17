@@ -144,7 +144,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     }
                 }
             }
-            //detailImage.setVisibility(View.VISIBLE);
+            detailImage.setVisibility(View.VISIBLE);
 
         }
 
@@ -165,7 +165,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
         // Set view elements on INVISIBLE to avoid strange displays while loading
         detailCategory.setVisibility(View.INVISIBLE);
-        //detailImage.setVisibility(View.INVISIBLE);
+        detailImage.setVisibility(View.INVISIBLE);
         //detailTitle.setVisibility(View.INVISIBLE);
         //detailSubTitle.setVisibility(View.INVISIBLE);
         //detailDescription.setVisibility(View.INVISIBLE);
