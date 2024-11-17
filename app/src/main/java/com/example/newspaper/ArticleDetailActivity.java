@@ -243,8 +243,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
 
-                ImageView artImage = findViewById(R.id.detailImage);
-                artImage.setImageBitmap(imageBitmap);
+                detailImage.setImageBitmap(imageBitmap);
                 //article.addImage(convertBitmapToBase64(imageBitmap),"");
             }
         }
@@ -308,45 +307,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    // this function is triggered when the Select Image Button is clicked
-    private void imageChooser()
-    {
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-
-        launchSomeActivity.launch(i);
-    }
-
-    ActivityResultLauncher<Intent> launchSomeActivity
-            = registerForActivityResult(
-            new ActivityResultContracts
-                    .StartActivityForResult(),
-            result -> {
-                if (result.getResultCode()
-                        == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    // do your operation from here....
-                    if (data != null
-                            && data.getData() != null) {
-                        Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap = null;
-                        try {
-                            selectedImageBitmap
-                                    = MediaStore.Images.Media.getBitmap(
-                                    this.getContentResolver(),
-                                    selectedImageUri);
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        ImageView artImage = findViewById(R.id.detailImage);
-                        artImage.setImageBitmap(selectedImageBitmap);
-                        article.addImage(convertBitmapToBase64(selectedImageBitmap),selectedImageUri.toString());
-                    }
-                }
-            });
 
     public static String convertBitmapToBase64(Bitmap bitmap) {
         String base64Image = null;
