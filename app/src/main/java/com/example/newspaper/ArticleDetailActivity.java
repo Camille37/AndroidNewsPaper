@@ -7,6 +7,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -57,7 +60,12 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
     //private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
-    private int SELECT_PICTURE = 200;
+
+    private static final int REQUEST_GALLERY_PERMISSION = 100;
+    private static final int REQUEST_CAMERA_PERMISSION = 200;
+
+    private static final int GALLERY_REQUEST_CODE = 1;
+    private static final int CAMERA_REQUEST_CODE = 2;
 
     private Article article;
 
@@ -153,11 +161,116 @@ public class ArticleDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE);
-                //checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
-                imageChooser();
+                showPictureDialog();
+                //imageChooser();
             }
         });
+    }
+
+    private void showPictureDialog() {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera" };
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                requestGalleryPermission();
+                                break;
+                            case 1:
+                                requestCameraPermission();
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
+
+    private void requestGalleryPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GALLERY_PERMISSION);
+        } else {
+            choosePhotoFromGallery();
+        }
+    }
+
+    private void choosePhotoFromGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+    }
+
+    private void requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        } else {
+            takePhotoFromCamera();
+        }
+    }
+
+    private void takePhotoFromCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == GALLERY_REQUEST_CODE) {
+                Uri selectedImageUri = data.getData();
+
+                Bitmap selectedImageBitmap = null;
+                try {
+                    selectedImageBitmap
+                            = MediaStore.Images.Media.getBitmap(
+                            this.getContentResolver(),
+                            selectedImageUri);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ImageView artImage = findViewById(R.id.detailImage);
+                artImage.setImageBitmap(selectedImageBitmap);
+                //article.addImage(convertBitmapToBase64(selectedImageBitmap),selectedImageUri.toString());
+
+            } else if (requestCode == CAMERA_REQUEST_CODE) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+                ImageView artImage = findViewById(R.id.detailImage);
+                artImage.setImageBitmap(imageBitmap);
+                //article.addImage(convertBitmapToBase64(imageBitmap),"");
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_GALLERY_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    choosePhotoFromGallery();
+                } else {
+                    // Permission denied, show a message to the user
+                    Toast.makeText(ArticleDetailActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    takePhotoFromCamera();
+                } else {
+                    // Permission denied, show a message to the user
+                    Toast.makeText(ArticleDetailActivity.this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     public void startDownloadUI(){
@@ -189,57 +302,11 @@ public class ArticleDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected (MenuItem item) {
 
         int itemId = item.getItemId();
-        if (itemId == R.id.action_back) {
-            startActivity(new Intent(this, MainActivity.class));
-            return true;
-        } else if (itemId == R.id.action_login) {
+        if (itemId == R.id.action_login) {
             startActivity(new Intent(this, LoginActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    // Function to check and request permission
-    public void checkPermission(String permission, int requestCode)
-    {
-        // Checking if permission is not granted
-        if (ContextCompat.checkSelfPermission(ArticleDetailActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(ArticleDetailActivity.this, new String[] { permission }, requestCode);
-        }
-        else {
-            Toast.makeText(ArticleDetailActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // This function is called when user accept or decline the permission.
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-//        if (requestCode == CAMERA_PERMISSION_CODE) {
-//
-//            // Checking whether user granted the permission or not.
-//            if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
-//
-//                // Showing the toast message
-//                Toast.makeText(ArticleDetailActivity.this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
-//            }
-//            else {
-//                Toast.makeText(ArticleDetailActivity.this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PERMISSION_GRANTED) {
-                Toast.makeText(ArticleDetailActivity.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(ArticleDetailActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     // this function is triggered when the Select Image Button is clicked
