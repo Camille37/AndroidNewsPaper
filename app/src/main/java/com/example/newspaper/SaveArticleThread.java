@@ -14,6 +14,8 @@ public class SaveArticleThread implements Runnable{
     private final String login_user="DEV_TEAM_06";
     private final String login_pwd = "123456@06";
 
+    private Article article;
+
     private String imageBase64;
 
     public SaveArticleThread (ArticleDetailActivity aa, int articleID, String imageBase64) {
@@ -35,19 +37,12 @@ public class SaveArticleThread implements Runnable{
 
         try{
             mm = new ModelManager(prop);
-            Article article = mm.getArticle(articleID);
+            article = mm.getArticle(articleID);
             Image newImage = new Image(mm, 1, "new image", articleID, imageBase64);
             int i = mm.saveImage(newImage);
         }catch (AuthenticationError e) {
             Log.e("authentication error", e.getMessage());
             System.exit(-1);
         }
-
-//        aa.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                aa.finishDownloadUI(article);
-//            }
-//        });
     }
 }

@@ -40,7 +40,7 @@ public class DownloadArticlesThreads implements Runnable{
             try{
                 mm = new ModelManager(prop);
             }catch (AuthenticationError e) {
-                Log.e("authentification error", e.getMessage());
+                Log.e("authentication error", e.getMessage());
                 System.exit(-1);
             }
 
