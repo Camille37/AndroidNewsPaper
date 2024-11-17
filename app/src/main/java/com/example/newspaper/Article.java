@@ -2,10 +2,19 @@ package com.example.newspaper;
 
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.ImageFormat;
+import android.media.ImageReader;
+import android.os.Environment;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.json.simple.JSONObject;
 import com.example.exceptions.ServerCommunicationError;
 
@@ -127,6 +136,7 @@ public class Article extends ModelEntity implements Serializable {
         int order = 1;
         Image img =new Image(mm, order, description, getId(), b64Image);
         mainImage= img;
+
         return img;
     }
 

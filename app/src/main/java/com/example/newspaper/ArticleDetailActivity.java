@@ -6,12 +6,16 @@ import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,17 +33,27 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NavUtils;
 import androidx.core.content.ContextCompat;
 
+import com.example.exceptions.AuthenticationError;
 import com.example.newspaper.ui.login.LoginActivity;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public class ArticleDetailActivity extends AppCompatActivity {
 
-    private static final int CAMERA_PERMISSION_CODE = 100;
+    //private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
+    private int SELECT_PICTURE = 200;
+
+    private Article art;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
+
+        art = (Article) getIntent().getExtras().get("article");
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -68,6 +84,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     }
                 }
             }
+
         }
 
         detailImage.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +93,8 @@ public class ArticleDetailActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE);
-                checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
-
-
+                //checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
+                imageChooser();
             }
         });
 
@@ -132,19 +148,19 @@ public class ArticleDetailActivity extends AppCompatActivity {
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-
-            // Checking whether user granted the permission or not.
-            if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
-
-                // Showing the toast message
-                Toast.makeText(ArticleDetailActivity.this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(ArticleDetailActivity.this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == STORAGE_PERMISSION_CODE) {
+//        if (requestCode == CAMERA_PERMISSION_CODE) {
+//
+//            // Checking whether user granted the permission or not.
+//            if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
+//
+//                // Showing the toast message
+//                Toast.makeText(ArticleDetailActivity.this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
+//            }
+//            else {
+//                Toast.makeText(ArticleDetailActivity.this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+        if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0
                     && grantResults[0] == PERMISSION_GRANTED) {
                 Toast.makeText(ArticleDetailActivity.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
@@ -153,6 +169,71 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 Toast.makeText(ArticleDetailActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    // this function is triggered when the Select Image Button is clicked
+    private void imageChooser()
+    {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        launchSomeActivity.launch(i);
+    }
+
+    ActivityResultLauncher<Intent> launchSomeActivity
+            = registerForActivityResult(
+            new ActivityResultContracts
+                    .StartActivityForResult(),
+            result -> {
+                if (result.getResultCode()
+                        == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    // do your operation from here....
+                    if (data != null
+                            && data.getData() != null) {
+                        Uri selectedImageUri = data.getData();
+                        Bitmap selectedImageBitmap = null;
+                        try {
+                            selectedImageBitmap
+                                    = MediaStore.Images.Media.getBitmap(
+                                    this.getContentResolver(),
+                                    selectedImageUri);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        ImageView artImage = findViewById(R.id.detailImage);
+                        artImage.setImageBitmap(selectedImageBitmap);
+                        art.addImage(convertBitmapToBase64(selectedImageBitmap),selectedImageUri.toString());
+                    }
+                }
+            });
+
+    public static String convertBitmapToBase64(Bitmap bitmap) {
+        String base64Image = null;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        try {
+            // Compress the bitmap into the output stream
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+
+            // Get the byte array from the output stream
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            // Convert the byte array to Base64 string
+            base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                byteArrayOutputStream.close(); // Close the stream
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return base64Image;
     }
 
 }
