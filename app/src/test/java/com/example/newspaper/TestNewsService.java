@@ -3,6 +3,8 @@ package com.example.newspaper;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import android.util.Log;
+
 import java.util.List;
 import java.util.Properties;
 import java.io.IOException;
@@ -27,17 +29,23 @@ public class TestNewsService {
 
         // Log in
         ModelManager mm = null;
-        try{
+        try {
             mm = new ModelManager(prop);
-        }catch (AuthenticationError e) {
+        } catch (AuthenticationError e) {
 
             System.exit(-1);
         }
 
         // get list of articles for logged user
-        List<Article> res = mm.getArticles(10,10);
+        List<Article> res = mm.getArticles();
         for (Article article : res) {
             System.out.println(article);
+        }
+
+        try {
+            //mm.deleteImage(12037);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
 
         // create one article and save in server
