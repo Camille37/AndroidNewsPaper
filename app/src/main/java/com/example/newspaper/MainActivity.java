@@ -1,20 +1,23 @@
 package com.example.newspaper;
 
-import android.content.SharedPreferences;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.newspaper.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
 
         // Download articles
         Thread t = new Thread(new DownloadArticlesThreads(MainActivity.this));
@@ -79,5 +85,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void filterArticlesByCategory(List<Article> allArticles, String category) {
         adapter.updateData(allArticles, category);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_login) {
+            startActivity(new Intent(this, LoginActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
